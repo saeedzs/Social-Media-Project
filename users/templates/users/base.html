@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Users App{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome CDN for Social Media Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-4.0.0.js" integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Custom Styled Navbar */
+        .custom-navbar {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin: 15px 20px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft Shadow */
+        }
+
+        /* Brand / Social Logo */
+        .navbar-brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: #0d6efd;
+            text-decoration: none;
+            font-size: 1.25rem;
+        }
+
+        .navbar-brand-logo i {
+            font-size: 1.6rem;
+            transition: transform 0.2s ease;
+        }
+
+        .navbar-brand-logo:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Nav Buttons & Links */
+        .nav-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-welcome {
+            font-weight: 500;
+            color: #495057;
+            margin-right: 5px;
+        }
+
+        /* Fully Formed Custom Buttons */
+        .btn-custom-primary {
+            background-color: #0d6efd;
+            color: #ffffff;
+            border: 1px solid #0d6efd;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+            color: #ffffff;
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+        }
+
+        .btn-custom-outline {
+            background-color: transparent;
+            color: #495057;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-custom-outline:hover {
+            background-color: #e9ecef;
+            color: #212529;
+            border-color: #adb5bd;
+        }
+
+        .btn-custom-danger {
+            background-color: #dc3545;
+            color: #ffffff;
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-custom-danger:hover {
+            background-color: #bb2d3b;
+            border-color: #b02a37;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Container Body Spacing */
+        .main-container {
+            margin: 20px;
+            padding: 20px;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; } /* Stay fully visible for ~2.4 seconds */
+            100% { opacity: 0; display: none; } /* Fade out over the remaining time */
+            }
+
+        .alert-auto-dismiss {
+            animation: fadeOut 3s forwards;
+            }
+    </style>
+</head>
+<body>
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-auto-dismiss" role="alert">            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Header / Navbar -->
+    <header class="custom-navbar d-flex justify-content-between align-items-center">
+        <!-- Top-Left Social Media Logo / Brand -->
+        <a href="{% url 'feed' %}" class="navbar-brand-logo">
+            <img src="{% static 'users/images/group.png' %}" alt="SocialApp Logo" style="height: 32px; width: auto;">
+            <span>SocialApp</span>
+        </a>
+
+        <!-- Top-Right Actions & Authentication Links -->
+        <div class="nav-user-info">
+            {% if request.user.is_authenticated %}
+                <span class="user-welcome">Welcome, <strong>{{ request.user.username }}</strong>!</span>
+                <a href="{% url 'index' %}" class="btn btn-custom-outline">
+                    <i class="fa-solid fa-user me-1"></i> Profile
+                </a>
+                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-custom-danger">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Log Out
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-custom-primary">
+                    <i class="fa-solid fa-right-to-bracket me-1"></i> Login
+                </a>
+                <a href="{% url 'register' %}" class="btn btn-custom-outline">
+                    <i class="fa-solid fa-user-plus me-1"></i> Register
+                </a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-container">
+        {% block body %}
+        {% endblock %}
+    </main>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
