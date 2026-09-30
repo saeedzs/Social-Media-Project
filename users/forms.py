@@ -17,7 +17,7 @@ class ProfileEditForm(forms.ModelForm):
 
 # class LoginForm(forms.Form):
 #     username = forms.CharField()
-#     password = forms.CharField(widget=forms.PasswordInput)
+#     password = forms.CharField(widget=forms.PasswordInput) this widget mask all characters typed in the password field
     
     
     

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse 
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm
@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.models import User
 
 # Create your views here.
 # def user_login(request):
@@ -29,12 +30,18 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 #     return render(request, 'users/login.html', {'form': form})
 
 @login_required
-def index(request):
-    current_user = request.user
-    post_id = request.POST.get('post_id')
-    posts = Post.objects.filter(user=current_user).order_by('-created')
-    return render(request, 'users/index.html', {'posts':posts } )
+def user_profile(request, username):
+    # Retrieve the user whose profile is being viewed
+    profile_user = get_object_or_404(User, username=username)
+    
+    # Get all posts made by this user
+    user_posts = profile_user.post_set.all()  # Assuming Related name on Post model or default set
 
+    context = {
+        'profile_user': profile_user,
+        'posts': user_posts,
+    }
+    return render(request, 'users/profile.html', context)
 # def register(request):
 #     if request.method == 'POST':
 #         user_form = UserRegistrationForm(request.POST)
