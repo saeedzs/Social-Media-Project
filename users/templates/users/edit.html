@@ -16,6 +16,23 @@
   <div class="card shadow-sm p-4">
     <h2 class="mb-4 text-center">Edit Profile</h2>
 
+    <!-- Current Profile Picture Display -->
+    <div class="text-center mb-4">
+      {% if request.user.profile.photo %}
+        <img src="{{ request.user.profile.photo.url }}" 
+             alt="{{ request.user.username }}" 
+             class="rounded-circle img-thumbnail shadow-sm" 
+             style="width: 120px; height: 120px; object-fit: cover;">
+      {% else %}
+        <!-- Fallback avatar icon if no picture is set -->
+        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto border shadow-sm" 
+             style="width: 120px; height: 120px;">
+          <i class="fa-solid fa-user text-secondary" style="font-size: 3rem;"></i>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Edit Profile Form -->
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ user_form|crispy }}
@@ -32,7 +49,7 @@
         Change Password
       </a>
       
-      <a href="{% url 'index' %}" class="text-decoration-none">Cancel</a>
+      <a href="{% url 'user_profile' username=request.user.username %}" class="text-decoration-none">Cancel</a>
     </div>
   </div>
 </div>

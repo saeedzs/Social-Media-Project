@@ -1,10 +1,11 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import PostCreateForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from .models import Post
+from .models import Post,Comment
 from django.http import JsonResponse
 import json
 from django.contrib import messages
+from django.db.models import Prefetch
 
 # Create your views here.
 @login_required
@@ -38,7 +39,9 @@ def feed(request):
     else:
         comment_form = CommentForm()
 
-    posts = Post.objects.all().order_by('-created')
+    posts = Post.objects.select_related('user__profile').prefetch_related(
+        Prefetch('comment', queryset=Comment.objects.select_related('user__profile'))
+    ).order_by('-created')
     logged_user = request.user
     return render(request, 'posts/feed.html', {'posts':posts , 'logged_user':logged_user, 'comment_form':comment_form})
 
