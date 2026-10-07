@@ -10,10 +10,12 @@ class Post(models.Model):
     caption = models.TextField(blank=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200,blank=True)
-    created = models.DateField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
     liked_by = models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='post_liked',blank=True)
     
-    
+    class Meta:
+        ordering = ['-created']  # Set default ordering for all queries (newest first)
+        
     def __str__(self):
         return self.title
 
@@ -29,7 +31,7 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ('created',)
+        ordering = ('-created',)
 
     def __str__(self):
         return f"{self.user.username} - {self.body[:20]}"

@@ -35,7 +35,7 @@ def user_profile(request, username):
     profile_user = get_object_or_404(User, username=username)
     
     # Get all posts made by this user
-    user_posts = profile_user.post_set.all()  # Assuming Related name on Post model or default set
+    user_posts = profile_user.post_set.all().order_by('-created')  # Assuming Related name on Post model or default set
 
     context = {
         'profile_user': profile_user,
